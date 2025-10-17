@@ -1,0 +1,113 @@
+body {
+  font-family: Impact, sans-serif;
+  background: linear-gradient(to bottom right, #dce8ff, #fcfcfc);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.header-gif {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto 20px; /* Центрируем и добавляем отступ снизу */
+  display: block; /* Для корректного отображения */
+}
+
+.todo-container {
+  width: 700px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-top: -169px;
+}
+
+#search {
+  width: 95%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.highlight {
+  background-color: yellow;
+  font-weight: bold;
+}
+
+#task-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+#task-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+#task-list li.highlight {
+  background-color: yellow;
+}
+
+#task-list li span:first-child {
+  flex: 1; /* Текст задачи занимает всю доступную ширину */
+  max-width: 65%; /* Ограничиваем ширину текста задачи */
+  overflow-wrap: break-word; /* Перенос длинного текста */
+}
+
+#task-list li span:nth-child(2) {
+  width: 150px; /* Фиксированная ширина для даты */
+  text-align: left; /* Выровнять по правому краю */
+  white-space: nowrap; /* Оставляем дату на одной строке */
+}
+
+#task-list li .delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: red;
+  font-size: 16px;
+}
+
+.new-task {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+#new-task {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+#task-date {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 150px; /* Фиксированная ширина для поля даты */
+}
+
+#add-task-btn {
+  padding: 10px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#add-task-btn:hover {
+  background-color: #0056b3;
+}
