@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geolocation Map Puzzle</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@0.7.7/dist/leaflet.css">
+</head>
+<body>
+    <div class="container">
+        <div class="top-row">
+            <div id="map"></div>
+            <div id="imageContainer"></div>
+        </div>
+        <div class="button-row">
+            <button id="getLocationBtn">Get location</button>
+            <button id="getMapImageBtn">Get the map</button>
+        </div>
+        <div class="bottom-row">
+            <div class="puzzle-container">
+                <div id="scrambledContainer"></div>
+                <div id="puzzleContainer">
+                    <div class="puzzle-cell"></div>
+                    <div class="puzzle-cell"></div>
+                    <div class="puzzle-cell"></div>
+                    <div class="puzzle-cell"></div>
+                    <div class="puzzle-cell"></div>
+                    <div class="puzzle-cell"></div>
+                    <div class="puzzle-cell"></div>
+                    <div class="puzzle-cell"></div>
+                    <div class="puzzle-cell"></div>
+                    <div class="puzzle-cell"></div>
+                    <div class="puzzle-cell"></div>
+                    <div class="puzzle-cell"></div>
+                    <div class="puzzle-cell"></div>
+                    <div class="puzzle-cell"></div>
+                    <div class="puzzle-cell"></div>
+                    <div class="puzzle-cell"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@0.7.7/dist/leaflet.js"></script>
+    <script src="https://rawcdn.githack.com/mapbox/leaflet-image/v0.0.4/leaflet-image.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
