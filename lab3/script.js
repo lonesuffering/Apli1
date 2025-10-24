@@ -61,11 +61,14 @@ getMapImageBtn.addEventListener('click', () => {
             }
             imageContainer.innerHTML = '';
             const img = new Image();
-            img.src = canvas.toDataURL();
-            img.style.maxWidth = "100%";
-            img.style.maxHeight = "100%";
-            imageContainer.appendChild(img);
-            createScrambledImage(img);
+            img.onload = () => { // Wait for the image to load
+                img.style.maxWidth = "100%";
+                img.style.maxHeight = "100%";
+                imageContainer.appendChild(img);
+                createScrambledImage(img); // Pass the image after loading
+            };
+            img.src = canvas.toDataURL(); // Set source after onload is defined
+            console.log("Image source set:", img.src); // Debug
         });
     } else {
         alert("Map is still loading. Please try again in a few seconds.");
@@ -76,6 +79,10 @@ getMapImageBtn.addEventListener('click', () => {
 function createScrambledImage(img) {
     const imgWidth = img.width;
     const imgHeight = img.height;
+    if (!imgWidth || !imgHeight) {
+        console.error("Image dimensions are invalid:", imgWidth, imgHeight);
+        return;
+    }
     const partWidth = imgWidth / 4;
     const partHeight = imgHeight / 4;
     scrambledContainer.innerHTML = '';
@@ -88,16 +95,16 @@ function createScrambledImage(img) {
             canvas.height = partHeight;
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, col * partWidth, row * partHeight, partWidth, partHeight, 0, 0, partWidth, partHeight);
-            imageParts.push(canvas.toDataURL());
+            const partData = canvas.toDataURL();
+            imageParts.push(partData);
 
             const imgPart = new Image();
-            imgPart.src = canvas.toDataURL();
+            imgPart.src = partData;
             imgPart.draggable = true;
             imgPart.style.width = "100%";
             imgPart.style.height = "100%";
             imgPart.style.border = "1px solid gray";
             imgPart.dataset.index = imageParts.length - 1;
-
             imgPart.addEventListener('dragstart', dragStart);
             scrambledContainer.appendChild(imgPart);
         }
@@ -108,11 +115,10 @@ function createScrambledImage(img) {
 
 // Scramble images
 function scrambleImages() {
-    const imgs = scrambledContainer.children;
-    const imgArray = Array.from(imgs);
-    imgArray.sort(() => Math.random() - 0.5);
+    const imgs = Array.from(scrambledContainer.children);
+    imgs.sort(() => Math.random() - 0.5);
     scrambledContainer.innerHTML = '';
-    imgArray.forEach(img => scrambledContainer.appendChild(img));
+    imgs.forEach(img => scrambledContainer.appendChild(img));
 }
 
 // Start drag
@@ -123,7 +129,7 @@ function dragStart(event) {
 // Get all cells in the puzzle container
 const puzzleCells = puzzleContainer.children;
 
-// Add event listener for each cell in the puzzle container
+// Add event listeners for each cell in the puzzle container
 for (let cell of puzzleCells) {
     cell.addEventListener('dragover', (event) => {
         event.preventDefault(); // Allow drop
@@ -131,19 +137,19 @@ for (let cell of puzzleCells) {
 
     cell.addEventListener('drop', (event) => {
         event.preventDefault();
-        const index = event.dataTransfer.getData('text/plain'); // Get the index of the element
-        const imgData = imageParts[index]; // Get image data by index
+        const index = event.dataTransfer.getData('text/plain');
+        const imgData = imageParts[index];
 
         // Check if the cell is empty
         if (cell.children.length === 0) {
             const imgPart = new Image();
-            imgPart.src = imgData; // Create image
+            imgPart.src = imgData;
+            imgPart.draggable = true;
             imgPart.style.width = "100%";
             imgPart.style.height = "100%";
             imgPart.style.border = "1px solid gray";
-            imgPart.dataset.index = index; // Save index in the element
-
-            // Add image to the target cell
+            imgPart.dataset.index = index;
+            imgPart.addEventListener('dragstart', dragStart);
             cell.appendChild(imgPart);
 
             // Remove the element from scrambledContainer
@@ -151,9 +157,6 @@ for (let cell of puzzleCells) {
             if (scrambledImg) {
                 scrambledContainer.removeChild(scrambledImg);
             }
-
-            // Update imageParts to mark the element as moved
-            imageParts[index] = null; // Nullify the element in imageParts
 
             // Check if the puzzle is completed
             checkPuzzleCompleted();
@@ -175,22 +178,19 @@ scrambledContainer.addEventListener('drop', (event) => {
     // Create image element
     const imgPart = new Image();
     imgPart.src = imgData;
+    imgPart.draggable = true;
     imgPart.style.width = "100%";
     imgPart.style.height = "100%";
     imgPart.style.border = "1px solid gray";
-    imgPart.dataset.index = index; // Save index in the element
-
-    // Add image to scrambledContainer
+    imgPart.dataset.index = index;
+    imgPart.addEventListener('dragstart', dragStart);
     scrambledContainer.appendChild(imgPart);
 
     // Remove element from puzzleContainer
-    const puzzleImg = puzzleContainer.children[index];
+    const puzzleImg = puzzleContainer.querySelector(`img[data-index="${index}"]`);
     if (puzzleImg) {
-        puzzleContainer.removeChild(puzzleImg);
+        puzzleImg.parentNode.removeChild(puzzleImg);
     }
-
-    // Add element back to imageParts
-    imageParts.push(imgData);
 });
 
 // Check if the puzzle is completed
@@ -203,12 +203,12 @@ function checkPuzzleCompleted() {
             const img = puzzleCells[i].children[0];
             if (img.dataset.index == i) {
                 correctPieces++;
-                console.log(`Piece ${i + 1} is in the correct position.`); // Log specific piece placement
+                console.log(`Piece ${i + 1} is in the correct position.`);
             } else {
-                console.log(`Piece ${i + 1} is NOT in the correct position.`); // Log incorrect placement
+                console.log(`Piece ${i + 1} is NOT in the correct position.`);
             }
         } else {
-            console.log(`Cell ${i + 1} is empty.`); // Log if cell is empty
+            console.log(`Cell ${i + 1} is empty.`);
         }
     }
 
@@ -218,7 +218,7 @@ function checkPuzzleCompleted() {
     if (correctPieces === puzzleCells.length) {
         console.log("Puzzle completed, sending notification.");
         showBrowserNotification();
-        console.log("All pieces are in the correct position!"); // Log the message for correct arrangement
+        console.log("All pieces are in the correct position!");
     }
 }
 
